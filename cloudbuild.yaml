@@ -5,7 +5,7 @@ steps:
  # Push the container image to Container Registry
  - name: 'gcr.io/cloud-builders/docker'
    args: ['push', 'gcr.io/$PROJECT_ID/gcpdevops']
- # Deploy container image to GKE Cluster
+ # Deploy container image to GKE Cluster updated
  - name: 'gcr.io/cloud-builders/gke-deploy'
    args:
    - run
