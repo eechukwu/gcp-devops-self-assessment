@@ -37,7 +37,7 @@ jobs:
         tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     - name: Set up Google Cloud SDK
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
       with:
         version: '340.0.0'
         project_id: ${{ env.PROJECT_ID }}
