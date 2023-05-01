@@ -1,35 +1,38 @@
-deploy:
-    needs: build-python
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_ID: <your-project-id>
+  IMAGE_NAME: python-ci-with-docker
+
+jobs:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-      
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/python-ci-docker:${{ github.sha }}
-      
-    - name: Configure gcloud CLI
-      uses: google-github-actions/setup-gcloud@master
-      with:
-        version: 'latest'
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-      
-    - name: Configure kubectl
-      uses: google-github-actions/setup-kubectl@master
-      
-    - name: Deploy to GKE
-      run: |
-        kubectl apply -f deployment.yaml
-        kubectl apply -f service.yaml
+      - uses: actions/checkout@v2
+
+      - name: Configure Google Cloud SDK
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_email: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
+          service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+
+      - name: Configure Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Deploy to GKE
+        run: |
+          gcloud container clusters get-credentials <your-cluster-name> --zone <your-cluster-zone>
+          kubectl set image deployment/<your-deployment-name> <your-container-name>=${{ env.IMAGE_NAME }}:${{ github.sha }}
