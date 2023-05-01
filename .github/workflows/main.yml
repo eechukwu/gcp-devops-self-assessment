@@ -1,51 +1,35 @@
-name: Python CI with Docker and GKE
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  build-python:
+deploy:
+    needs: build-python
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
+      
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
-
+      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-
-    - name: Build and Push Docker Image
+      
+    - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
         context: .
         push: true
-        tags: eechukwu/demo-apps:${{ github.sha }}
-        builder: ${{ env.BUILDKIT_HOST }}
-
-    - name: Configure Google Cloud SDK
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/python-ci-docker:${{ github.sha }}
+      
+    - name: Configure gcloud CLI
+      uses: google-github-actions/setup-gcloud@master
       with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_email: ${{ secrets.GCP_SA_EMAIL }}
         service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: my-project-id
-        zone: us-central1-a
-        cluster_name: my-cluster-name
-
+      
+    - name: Configure kubectl
+      uses: google-github-actions/setup-kubectl@master
+      
     - name: Deploy to GKE
       run: |
-        gcloud config set project my-project-id
-        gcloud container clusters get-credentials my-cluster-name --zone us-central1-a
-        kubectl apply -f gke.yaml
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
