@@ -40,7 +40,6 @@ jobs:
         tags: eechukwu/demo-apps:${{ github.sha }}
         builder: ${{ env.BUILDKIT_HOST }}
 
-    steps:
     - name: Checkout
       uses: actions/checkout@v3
 
@@ -48,7 +47,7 @@ jobs:
     - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
       with:
         service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: gcp-dev-account
+        project_id: "gcp-dev-account"
 
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
@@ -56,12 +55,11 @@ jobs:
         gcloud --quiet auth configure-docker
 
     # Get the GKE credentials so we can deploy to the cluster
-    - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
+    - uses: google-github-actions/get-gke-credentials@v1.8.0
       with:
         cluster_name: ${{ env.GKE_CLUSTER }}
         location: ${{ env.GKE_ZONE }}
         credentials: ${{ secrets.GKE_SA_KEY }}
-
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
