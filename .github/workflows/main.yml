@@ -1,14 +1,18 @@
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+env:
+  PROJECT_ID: "gcp-dev-account"
+  ZONE: "us-central1-c"
+  CLUSTER_NAME: "dev-cluster"
+  IMAGE_NAME: "eechukwu/demo-apps"
 
 jobs:
-  build-python:
+  deploy:
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
 
     steps:
     - uses: actions/checkout@v2
@@ -30,19 +34,20 @@ jobs:
       with:
         context: .
         push: true
-        tags: docker.io/eechukwu/demo-apps:${{ github.sha }}
-        builder: ${{ env.BUILDKIT_HOST }}
+        tags: ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-    - name: Install gcloud
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
+    - name: Set up Google Cloud SDK
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
-        version: 'latest'
+        version: '340.0.0'
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-    - name: Configure Docker
-      run: | 
+    - name: Configure Docker to use gcloud credentials
+      run: |
         gcloud auth configure-docker
 
     - name: Deploy to GKE
-      run: | 
-        gcloud container clusters get-credentials dev-cluster --zone us-central1-c
-        kubectl apply -f gke.yaml
+      run: |
+        gcloud container clusters get-credentials ${{ env.CLUSTER_NAME }} --zone ${{ env.ZONE }} --project ${{ env.PROJECT_ID }}
+        kubectl apply -f k8s/gke.yaml
