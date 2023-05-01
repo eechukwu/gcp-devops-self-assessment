@@ -34,7 +34,7 @@ jobs:
         builder: ${{ env.BUILDKIT_HOST }}
 
     - name: Install gcloud
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@main
       with:
         version: 'latest'
 
