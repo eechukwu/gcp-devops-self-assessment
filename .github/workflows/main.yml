@@ -1,45 +1,51 @@
-name: Build and Deploy
+name: Build and Deploy to GKE
 
 on:
   push:
-    branches:
-      - main
-
-env:
-  PROJECT_ID: my-gcp-project
-  IMAGE_NAME: python-ci-docker
-  IMAGE_TAG: ${{ github.sha }}
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
-      - name: Set up gcloud CLI
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build the Docker image
-        run: |
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
 
-      - name: Push the Docker image
-        uses: GoogleCloudPlatform/docker-credential-gcr@master
-        with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-        run: |
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-      - name: Deploy to GKE
-        uses: GoogleCloudPlatform/github-actions/deploy-gke@master
-        with:
-          credentials: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ env.PROJECT_ID }}
-          cluster_name: my-gke-cluster
-          location: us-central1-a
-          yaml_file: ./gke.yaml
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: docker.io/<your-dockerhub-username>/python-ci-with-docker:${{ github.sha }}
+
+    - name: Set up Google Cloud SDK
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        project_id: <your-project-id>
+        service_account_email: <your-service-account-email>
+        service_account_key: ${{ secrets.GCLOUD_AUTH }}
+
+    - name: Configure Docker to use GCR
+      run: |
+        gcloud auth configure-docker
+
+    - name: Deploy to GKE
+      run: |
+        gcloud container clusters get-credentials <your-gke-cluster-name> --zone <your-gke-cluster-zone>
+        kubectl apply -f gke.yaml
