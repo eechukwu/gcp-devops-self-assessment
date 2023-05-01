@@ -2,12 +2,19 @@ name: Python CI with Docker
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+env:
+  PROJECT_ID: gcp-dev-account
+  CLUSTER_NAME: dev-cluster
+  IMAGE_NAME: demo-apps
+  IMAGE_TAG: ${{ github.sha }}
+  ZONE: us-central1-c
 
 jobs:
-  build-python:
+  build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -28,9 +35,44 @@ jobs:
       uses: docker/setup-buildx-action@v1
 
     - name: Build and Push Docker Image
+      id: docker_build
       uses: docker/build-push-action@v2
       with:
         context: .
         push: true
-        tags: eechukwu/demo-apps:${{ github.sha }}
+        tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
         builder: ${{ env.BUILDKIT_HOST }}
+
+    - name: Set up GCloud CLI
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Authenticate with GKE cluster
+      id: auth_gke
+      uses: google-github-actions/auth-gke@v0.3
+      with:
+        cluster_name: ${{ env.CLUSTER_NAME }}
+        location: ${{ env.ZONE }}
+
+    - name: Configure kubectl
+      uses: google-github-actions/configure-kubectl@v1
+      with:
+        kubectl_version: "latest"
+
+    - name: Set up kubectl context
+      run: gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT_ID
+
+    - name: Deploy to GKE cluster
+      run: |
+        kubectl create deployment $IMAGE_NAME --image=$DOCKER_IMAGE
+        kubectl expose deployment $IMAGE_NAME --type=LoadBalancer --port 8080 --target-port 8080
+        
+    - name: Get LoadBalancer IP address
+      id: get_lb_ip
+      run: echo "::set-output name=lb_ip::$(kubectl get service $IMAGE_NAME -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+
+    - name: Print LoadBalancer IP address
+      run: echo "LoadBalancer IP address: ${{ steps.get_lb_ip.outputs.lb_ip }}"
