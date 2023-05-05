@@ -1,70 +1,16 @@
-name: Build and Deploy to GKE
-
+name: Build a Docker image and push it to Azure ACR with a single secret
 on:
-  push:
-    branches:
-      - main
-
-env:
-  PROJECT_ID:  ${{ secrets.GKE_PROJECT }}
-  GKE_CLUSTER: dev-cluster    # Add your cluster name here.
-  GKE_ZONE: us-central1-c   # Add your cluster zone here.
-
+  workflow_dispatch:
 
 jobs:
-  setup-build-publish-deploy:
-    name: Setup, Build, Publish, and Deploy
+  masking:
     runs-on: ubuntu-latest
-    environment: production
-
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: eechukwu/demo-apps:${{ github.sha }}
-        builder: ${{ env.BUILDKIT_HOST }}
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    # Setup gcloud CLI
-    - uses: google-github-actions/setup-gcloud@1bee7de035d65ec5da40a31f8589e240eba8fde5
-      with:
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
-        project_id: ${{ secrets.GKE_PROJECT }}
-
-    # Configure Docker to use the gcloud command-line tool as a credential
-    # helper for authentication
-    - run: |-
-        gcloud --quiet auth configure-docker
-
-    # Get the GKE credentials so we can deploy to the cluster
-    - uses: google-github-actions/get-gke-credentials@db150f2cc60d1716e61922b832eae71d2a45938f
-      with:
-        cluster_name: ${{ env.GKE_CLUSTER }}
-        location: ${{ env.GKE_ZONE }}
-        credentials: ${{ secrets.GKE_SA_KEY }}
-
-
-    # Deploy the Docker image to the GKE cluster
-    - name: Deploy
-      run: |-
-        kubectl apply -f gke.yaml
-        kubectl get services -o wide
+      - uses: actions/checkout@v3
+      
+      - shell: bash
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          REGISTRY_USERNAME=$(echo $AZURE_CREDENTIALS | jq -r '.["appId"]')
+          REGISTRY_PASSWORD=$(echo $AZURE_CREDENTIALS | jq -r '.["displayName"]')
