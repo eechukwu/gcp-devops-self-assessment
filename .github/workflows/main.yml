@@ -1,6 +1,10 @@
 name: Build a Docker image and push it to Azure ACR with a single secret
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 
 jobs:
   masking:
