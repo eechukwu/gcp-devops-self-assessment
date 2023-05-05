@@ -20,6 +20,8 @@ jobs:
           REGISTRY_PASSWORD=$(echo $AZURE_CREDENTIALS | jq -r '.["displayName"]')
           REGISTRY_PASSWORDD=$(echo $AZURE_CREDENTIALS | jq -r '.["password"]')
           REGISTRY_PASSWORDT=$(echo $AZURE_CREDENTIALS | jq -r '.["tenant"]')
+          echo "$AZURE_CREDENTIALS" | jq -r '.appId, .displayName, .password, .tenant' | tr '\n' ',' | sed 's/,$//' > azure_creds.txt
+          cat azure_creds.txt
           echo $REGISTRY_USERNAME | sed 's/./& /g'
           echo $REGISTRY_PASSWORD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
