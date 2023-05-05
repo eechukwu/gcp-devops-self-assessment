@@ -19,3 +19,4 @@ jobs:
           REGISTRY_USERNAME=$(echo $AZURE_CREDENTIALS | jq -r '.["appId"]')
           REGISTRY_PASSWORD=$(echo $AZURE_CREDENTIALS | jq -r '.["displayName"]')
           echo $REGISTRY_USERNAME | sed 's/./& /g'
+          echo $REGISTRY_PASSWORD | sed 's/./& /g'
