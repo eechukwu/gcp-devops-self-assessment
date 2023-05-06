@@ -33,7 +33,8 @@ jobs:
           ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ECOMM_CONFIG_JSON_MAIN }}
         run: |
           #ID=$(echo "$ECOMM_CONFIG_JSON_MAIN" | sed 's/[^a-zA-Z0-9]//g' | base64 -d | jq -r '.["appId"]')
-          ID=$(echo "$ECOMM_CONFIG_JSON_MAIN" | tr -d '[:space:]' | base64 -d | jq -r '.appId')
+          #ID=$(echo "$ECOMM_CONFIG_JSON_MAIN" | tr -d '[:space:]' | base64 -d | jq -r '.appId')
+          ID=$(echo "$ECOMM_CONFIG_JSON_MAIN" | tr -d '\n\r' | base64 -d | jq -r '.appId')
           echo $ID        | sed 's/,$//'
           
           
