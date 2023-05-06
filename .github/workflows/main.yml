@@ -30,11 +30,9 @@ jobs:
 
       - name: Extract secret
         run: |
-          echo "$ECOMM_CONFIG_JSON" | base64 --decode | \
-          echo $(cat -) | jq '{appId, displayName, password}' | \
-          echo $(cat -) > config.json
+          echo "$ECOMM_CONFIG_JSON_MAIN" | base64 --decode | jq '.appId'
+
           
-      - name: Show extracted data
-        run: cat config.json
+ 
 
   
