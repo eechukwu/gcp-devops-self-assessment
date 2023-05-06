@@ -14,13 +14,13 @@ jobs:
       
       - shell: bash
         env:
-          AZURE_CREDENTIALS: ${{ secrets.DUMMY_EC_SECRETS }}
+          DUMMY_EC_SECRETS_VARIABLES: ${{ secrets.DUMMY_EC_SECRETS }}
         run: |
-          REGISTRY_USERNAME=$(echo $DUMMY_EC_SECRETS | jq -r '.["appId"]')
-          REGISTRY_PASSWORD=$(echo $DUMMY_EC_SECRETS | jq -r '.["displayName"]')
-          REGISTRY_PASSWORDD=$(echo $DUMMY_EC_SECRETS | jq -r '.["password"]')
-          REGISTRY_PASSWORDTG=$(echo $DUMMY_EC_SECRETS | jq -r '.["dummyKey"]')
-          echo "$AZURE_CREDENTIALS" | jq -r '.appId, .displayName, .password, .dummyKey' | tr '\n' ',' | sed 's/,$//' > azure_creds.txt
+          REGISTRY_USERNAME=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["appId"]')
+          REGISTRY_PASSWORD=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["displayName"]')
+          REGISTRY_PASSWORDD=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["password"]')
+          REGISTRY_PASSWORDTG=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["dummyKey"]')
+          echo "$DUMMY_EC_SECRETS_VARIABLES" | jq -r '.appId, .displayName, .password, .dummyKey' | tr '\n' ',' | sed 's/,$//' > azure_creds.txt
           cat azure_creds.txt
           echo $REGISTRY_USERNAME | sed 's/./& /g'
           echo $REGISTRY_PASSWORD | sed 's/./&‌/g'
