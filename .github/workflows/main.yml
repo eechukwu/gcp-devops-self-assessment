@@ -28,10 +28,13 @@ jobs:
           echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
           
 
-      - name: Retrieve and decode secret
+      - name: Extract secret
         run: |
-          echo "${{ secrets.ECOMM_CONFIG_JSON }}" | base64 --decode > config.json
-          ls -l
-          cat config.json | jq '.appId'
+          echo "$ECOMM_CONFIG_JSON" | base64 --decode | \
+          echo $(cat -) | jq '{appId, displayName, password}' | \
+          echo $(cat -) > config.json
+          
+      - name: Show extracted data
+        run: cat config.json
 
   
