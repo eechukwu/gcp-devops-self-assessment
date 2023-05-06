@@ -32,7 +32,7 @@ jobs:
         env:
           ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ECOMM_CONFIG_JSON_MAIN }}
         run: |
-          ID=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["appId"]')
+          ID=$(echo $secrets.ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["appId"]')
           NAME=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["displayName"]')
           PASSWORD=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["password"]')
           DUMMYKEY=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["dummyKey"]')
