@@ -26,3 +26,5 @@ jobs:
           echo $REGISTRY_PASSWORD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
+          echo ${{ secrets.ECOMM_CONFIG_JSON }} | base64 -d > cypress.json
+          cat cypress.json
