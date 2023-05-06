@@ -33,6 +33,6 @@ jobs:
         env:
           ECOMM_CONFIG_JSON: ${{ secrets.ECOMM_CONFIG_JSON }}
         run: |
-          echo "$ECOMM_CONFIG_JSON" | base64 --decode
+          echo "${{ secrets.ECOMM_CONFIG_JSON }}" | base64 --decode
 
   
