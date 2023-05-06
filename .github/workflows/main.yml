@@ -28,10 +28,11 @@ jobs:
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
           
+
       - name: Retrieve and decode secret
         env:
           ECOMM_CONFIG_JSON: ${{ secrets.ECOMM_CONFIG_JSON }}
         run: |
-          echo "$ECOMM_CONFIG_JSON" | base64 --decode | sed 's/,$//' > config.json
-          cat config.json
+          echo "$ECOMM_CONFIG_JSON" | base64 --decode
+
   
