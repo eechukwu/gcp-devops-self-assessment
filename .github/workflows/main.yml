@@ -36,10 +36,10 @@ jobs:
           NAME=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["displayName"]')
           PASSWORD=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["password"]')
           DUMMYKEY=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["dummyKey"]')
-          echo $ID        | sed 's/./& /g'
-          echo $NAME      | sed 's/./& /g'
-          echo $PASSWORD  | sed 's/./& /g'
-          echo $DUMMYKEY  | sed 's/./& /g'
+          echo $ID        | sed 's/,$//'
+          echo $NAME      | sed 's/,$//'
+          echo $PASSWORD  | sed 's/,$//'
+          echo $DUMMYKEY  | sed 's/,$//'
 
           
  
