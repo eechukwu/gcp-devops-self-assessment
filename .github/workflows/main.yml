@@ -32,6 +32,7 @@ jobs:
       - name: Retrieve and decode secret
         run: |
           echo "${{ secrets.ECOMM_CONFIG_JSON }}" | base64 --decode > config.json
+          ls -l
           cat config.json
 
   
