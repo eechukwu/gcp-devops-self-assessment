@@ -9,6 +9,7 @@ on:
 jobs:
   masking:
     runs-on: ubuntu-latest
+      
     steps:
       - uses: actions/checkout@v3
       
@@ -26,5 +27,11 @@ jobs:
           echo $REGISTRY_PASSWORD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
-          echo ${{ secrets.ECOMM_CONFIG_JSON }} | base64 -d > cypress.json
-          cat cypress.json
+          
+      - name: Retrieve and decode secret
+        env:
+          ECOMM_CONFIG_JSON: ${{ secrets.ECOMM_CONFIG_JSON }}
+        run: |
+          echo "$ECOMM_CONFIG_JSON" | base64 --decode > config.json
+          cat config.json
+  
