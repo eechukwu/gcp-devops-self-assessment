@@ -31,9 +31,7 @@ jobs:
 
       - name: Retrieve and decode secret
         run: |
-          echo '{"username":"myuser","password":"mypassword"}' | base64
-          gh secret set ECOMM_CONFIG_JSON2 -b "eyJ1c2VybmFtZSI6Im15dXNlciIsInBhc3N3b3JkIjoibXlwYXNzd29yZCJ9Cg=="
-          echo "${{ secrets.ECOMM_CONFIG_JSON2 }}" | base64 --decode > config.json
+          echo "${{ secrets.ECOMM_CONFIG_JSON }}" | base64 --decode > config.json
           cat config.json
 
   
