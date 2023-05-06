@@ -32,7 +32,7 @@ jobs:
         env:
           ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ECOMM_CONFIG_JSON_MAIN }}
         run: |
-          REGISTRY_ID=$(echo $ECOMM_CONFIG_JSON_MAIN | jq -r '.["appId"]')
+          REGISTRY_ID=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["appId"]')
           echo $REGISTRY_ID  | sed 's/./& /g'
 
           
