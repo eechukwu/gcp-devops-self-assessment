@@ -46,14 +46,6 @@ jobs:
           #echo $PASSWORD  | sed 's/,$//'
           #echo $DUMMYKEY  | sed 's/,$//'
           
-      - name: Extract secret value
-        env:  
-          ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ECOMM_CONFIG_JSON_MAIN }}
-        run: |
-          echo "ECOMM_CONFIG_JSON_MAIN: $ECOMM_CONFIG_JSON_MAIN"
-          APP_ID=$(echo "$ECOMM_CONFIG_JSON_MAIN" | base64 -d | jq -r '.appId')
-          echo "APP_ID: $APP_ID"
-
           
 
 
