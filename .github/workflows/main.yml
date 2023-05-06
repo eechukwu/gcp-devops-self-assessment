@@ -30,7 +30,7 @@ jobs:
 
       - name: Extract secret
         run: |
-          app_id = $(echo "$ECOMM_CONFIG_JSON_MAIN" | base64 --decode | jq '.appId')
+          app_id=$(echo "$ECOMM_CONFIG_JSON_MAIN" | base64 --decode | jq '.appId')
           echo app_id  | sed 's/./& /g'
 
           
