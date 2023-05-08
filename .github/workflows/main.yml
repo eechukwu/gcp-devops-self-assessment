@@ -20,10 +20,10 @@ jobs:
           REGISTRY_PASSWORD=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["displayName"]')
           REGISTRY_PASSWORDD=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["password"]')
           REGISTRY_PASSWORDTG=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["dummyKey"]')
-          echo $REGISTRY_USERNAME | sed 's/./& /g'
-          echo $REGISTRY_PASSWORD | sed 's/./&‌/g'
-          echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
-          echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
+          echo $REGISTRY_USERNAME | sed 's/,$//'
+          echo $REGISTRY_PASSWORD | sed 's/,$//'
+          echo $REGISTRY_PASSWORDD | sed 's/,$//'
+          echo $REGISTRY_PASSWORDTG | sed 's/,$//'
           
       
       - name: Extract oneline secret oneline statement
