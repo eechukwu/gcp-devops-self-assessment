@@ -1,0 +1,6 @@
+cat oneline.json | base64 | tr -d '\n'
+ONELINE_CONFIG_JSON=$(cat oneline.json | base64 | tr -d '\n')
+echo $ONELINE_CONFIG_JSON
+echo $ONELINE_CONFIG_JSON | base64 --decode > decoded_ecoom.json
+echo decoded_ecoom.json
+echo "$ONELINE_CONFIG_JSON" | base64 --decode | jq '.appId'
