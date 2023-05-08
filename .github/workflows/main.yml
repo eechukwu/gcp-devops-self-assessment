@@ -27,6 +27,15 @@ jobs:
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
           
+      
+      - name: Extract oneline secret oneline statement
+        env:
+          DUMMY_EC_SECRETS_VARIABLES: ${{ secrets.DUMMY_EC_SECRETS }}
+        run: |
+          echo "$DUMMY_EC_SECRETS_VARIABLES" | jq -r '.appId, .displayName, .password, .dummyKey' | tr '\n' ',' | sed 's/,$//' > azure_creds.txt
+          cat azure_creds.txt
+
+          
           
       - name: Extract oneline secret worked 6
         env:
