@@ -46,7 +46,9 @@ jobs:
           ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ONELINE_CONFIG_JSON }}
         run: |
           ID=$(echo "$secrets.ONELINE_CONFIG_JSON" | base64 -d | jq -r '.appId')
-          echo $ID       
+          IDDEMO=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["appId"]')
+          echo $ID        | sed 's/,$//'    
+          echo $IDDEMO        | sed 's/,$//'
           
           
           
