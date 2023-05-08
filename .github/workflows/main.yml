@@ -20,8 +20,6 @@ jobs:
           REGISTRY_PASSWORD=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["displayName"]')
           REGISTRY_PASSWORDD=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["password"]')
           REGISTRY_PASSWORDTG=$(echo $DUMMY_EC_SECRETS_VARIABLES | jq -r '.["dummyKey"]')
-          echo "$DUMMY_EC_SECRETS_VARIABLES" | jq -r '.appId, .displayName, .password, .dummyKey' | tr '\n' ',' | sed 's/,$//' > azure_creds.txt
-          cat azure_creds.txt
           echo $REGISTRY_USERNAME | sed 's/./& /g'
           echo $REGISTRY_PASSWORD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
