@@ -45,7 +45,7 @@ jobs:
         env:
           ONELINE_CONFIG_JSON: ${{ secrets.ONELINE_CONFIG_JSON }}
         run: |
-          ID=$(echo "$secrets.ONELINE_CONFIG_JSON" | base64 -d | jq -r '.appId')
+          ID=$(echo $ONELINE_CONFIG_JSON | base64 -d | jq -r '.["appId"]')
           echo $ID        | sed 's/,$//'    
           
           
