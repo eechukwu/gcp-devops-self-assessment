@@ -27,21 +27,8 @@ jobs:
           echo $REGISTRY_PASSWORDD | sed 's/./&‌/g'
           echo $REGISTRY_PASSWORDTG | sed 's/./&‌/g'
           
-
-      - name: Extract secret
-        env:
-          ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ECOMM_CONFIG_JSON_MAIN }}
-        run: |
-          ID=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["appId"]')
-          NAME=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["displayName"]')
-          PASSWORD=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["password"]')
-          DUMMYKEY=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["dummyKey"]')
-          echo $NAME      | sed 's/,$//'
-          echo $PASSWORD  | sed 's/,$//'
-          echo $DUMMYKEY  | sed 's/,$//'
-          echo $ID        | sed 's/,$//'
           
-      - name: Extract oneline secret worked 5
+      - name: Extract oneline secret worked 6
         env:
           ONELINE_CONFIG_JSON: ${{ secrets.ONELINE_CONFIG_JSON }}
         run: |
