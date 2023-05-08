@@ -41,12 +41,14 @@ jobs:
           echo $DUMMYKEY  | sed 's/,$//'
           echo $ID        | sed 's/,$//'
           
-      - name: Extract oneline secret worked
+      - name: Extract oneline secret worked 2
         env:
           ONELINE_CONFIG_JSON: ${{ secrets.ONELINE_CONFIG_JSON }}
         run: |
           ID=$(echo $ONELINE_CONFIG_JSON | base64 -d | jq -r '.["appId"]')
-          echo $ID        | sed 's/,$//'    
+          DISPLAYNAME=$(echo $ONELINE_CONFIG_JSON | base64 -d | jq -r '.["displayName"]')
+          echo $ID           | sed 's/,$//'    
+          echo $DISPLAYNAME  | sed 's/,$//'
           
           
           
