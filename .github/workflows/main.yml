@@ -47,8 +47,10 @@ jobs:
         run: |
           ID=$(echo $ONELINE_CONFIG_JSON | base64 -d | jq -r '.["appId"]')
           DISPLAYNAME=$(echo $ONELINE_CONFIG_JSON | base64 -d | jq -r '.["displayName"]')
+          PASSWORD=$(echo $ONELINE_CONFIG_JSON | base64 -d | jq -r '.["password"]')
           echo $ID           | sed 's/,$//'    
           echo $DISPLAYNAME  | sed 's/,$//'
+          echo $PASSWORD     | sed 's/,$//'
           
           
           
