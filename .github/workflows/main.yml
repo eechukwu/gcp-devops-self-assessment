@@ -38,6 +38,13 @@ jobs:
           ID=$(echo "$secrets.ECOMM_CONFIG_JSON_MAIN" | tr -d '\n\r' | base64 -d | jq -r '.appId')
           echo $ID        | sed 's/,$//'
           
+      - name: Extract oneline secret
+        env:
+          ECOMM_CONFIG_JSON_MAIN: ${{ secrets.ONELINE_CONFIG_JSON }}
+        run: |
+          ID=$(echo "$secrets.ONELINE_CONFIG_JSON" | tr -d '\n\r' | base64 -d | jq -r '.appId')
+          echo $ID       
+          
           
           
           #NAME=$(echo $ECOMM_CONFIG_JSON_MAIN | base64 -d | jq -r '.["displayName"]')
