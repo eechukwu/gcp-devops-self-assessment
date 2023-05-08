@@ -41,7 +41,7 @@ jobs:
           echo $DUMMYKEY  | sed 's/,$//'
           echo $ID        | sed 's/,$//'
           
-      - name: Extract oneline secret worked 3
+      - name: Extract oneline secret worked 4
         env:
           ONELINE_CONFIG_JSON: ${{ secrets.ONELINE_CONFIG_JSON }}
         run: |
